@@ -1,0 +1,19 @@
+{
+  "name": "Add 2 Put.io",
+  "version": "1.0",
+  "description": "One click add for torrents to put io from any page",
+  "browser_action": {
+    "default_icon": "img/putio_logo.jpeg",
+    "popup" : "popup.html"
+  },
+  "permissions": [
+    "http://*/", "tabs"
+  ],
+  "content_scripts": [
+  {
+      "matches": ["http://*/*", "https://put.io/account/settings"],
+      "js": ["js/content.js", "js/prototype.js"]
+  }
+  ],
+  "options_page": "options.html"
+}

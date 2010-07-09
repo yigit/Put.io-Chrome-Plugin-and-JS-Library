@@ -1,3 +1,5 @@
 + Show available bandwidth & storage
 - error handling
 - download when done!
+- desktop notifications
+- change code to background

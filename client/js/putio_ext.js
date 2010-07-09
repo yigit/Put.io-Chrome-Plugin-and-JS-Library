@@ -1,5 +1,5 @@
 PE = {
-    _version : 101, //= 0.01
+    _version : 102, //= 0.01
     UPDATE_SERVER : "http://birbit.com/putio/version.json",
     _downloadItems : [],
     init : function() {
