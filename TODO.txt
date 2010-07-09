@@ -1,0 +1,3 @@
++ Show available bandwidth & storage
+- error handling
+- download when done!

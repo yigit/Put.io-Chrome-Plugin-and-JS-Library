@@ -1,0 +1,22 @@
+<html>
+<head>
+	<script type="text/javascript" src="api/trunk/sample/javascript/prototype.js"></script>
+	<script type="text/javascript" src="putio_ext.js"></script>
+</head>
+<body>
+	<form>
+	<table>
+		<tr><td>Api Key:</td><td><input id="api_key"/></td></tr>
+		<tr><td>Api Secret:</td><td><input id="api_secret"/></td></tr>
+		<tr><td></td><td><a href="javascript:save()">Save</a></td></tr>
+	</table>
+</body>
+</html>
+<script>
+save =  function() {
+	PE.saveApiKeyAndSecret($('api_key').value, $('api_secret').value);
+	alert("saved api key and secret.");
+}
+$('api_key').value = PE.getApiKey();
+$('api_secret').value = PE.getApiSecret();
+</script>

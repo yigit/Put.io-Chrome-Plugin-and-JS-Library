@@ -1,0 +1,35 @@
+<html>
+<head>
+<style>   
+	body {
+		min-width:357px;  
+	}
+	.content {
+		overflow:scroll;
+	}
+</style>
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="js/putio.js"></script>
+<script type="text/javascript" src="js/putio_ext.js"></script>
+
+<link rel="stylesheet" href="css/style.css" type="text/css">
+
+</head>
+<body>
+	<div id='update_info'></div>
+	<div id='status'></div>
+	<div id='menu'>
+		<img id="loading" src='img/loading_icon.gif' style='display:none'/>
+		<a href='javascript:PE.analyzePage()'>Manual Analysis</a> | <a href='javascript:PE.listTransfers()'>Transfers</a> | <a href='javascript:PE.listFiles()'>Files</a>
+		| <a href='javascript:PE.showMyAccount()'>Account</a>
+	</div><br/>
+	<div id="content">
+		
+	</div>
+</body>
+</html>        
+
+<script>
+chrome.tabs.executeScript(null, {file: "js/content.js"});
+PE.init();
+</script>
