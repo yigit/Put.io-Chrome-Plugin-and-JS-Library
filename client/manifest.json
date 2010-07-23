@@ -1,7 +1,8 @@
 {
   "name": "Add 2 Put.io",
-  "version": "1.0",
+  "version": "0.4",
   "description": "One click add for torrents to put io from any page",
+  "update_url": "http://github.com/downloads/yigit/Put.io-Chrome-Plugin-and-JS-Library/updates.xml",
   "browser_action": {
     "default_icon": "img/icon.png",
     "popup" : "popup.html"

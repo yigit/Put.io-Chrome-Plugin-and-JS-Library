@@ -13,7 +13,6 @@
 
 </head>
 <body>
-	<div id='update_info'></div>
 	<div id='menu'>
 		<img id="loading" src='img/loading_icon.gif' style='display:none'/>
 		<div class="menu-shim">
@@ -63,6 +62,8 @@ $A($('menu').getElementsByTagName('a')).each(
 	  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
 	};
 	
-	loadGA():
+	//disabled google analytics because it crash mac os build of chrome
+	//see: http://code.google.com/p/chromium/issues/detail?id=44941
+	//loadGA():
 
 </script>

@@ -1,6 +1,6 @@
 PE = {
-    _version : 101, //= 0.01
-    UPDATE_SERVER : "http://birbit.com/putio/version.json",
+    _version : 103, //= 0.03
+    UPDATE_SERVER : "http://github.com/downloads/yigit/Put.io-Chrome-Plugin-and-JS-Library/version.json",
     _downloadItems : [],
     init : function() {
         this.UI.init();
@@ -12,7 +12,6 @@ PE = {
             Putio.init(this.getApiKey(), this.getApiSecret());
             PE.anayzeUrl();
         }
-        this.checkForUpdate();
     },
     checkForUpdate : function() {
         new Ajax.Request(this.UPDATE_SERVER, 
@@ -238,10 +237,6 @@ PE.UI = {
         }
         this._content.innerHTML = html;
     },
-    displayUpdate : function(data) {
-        var updateDiv = $('update_info');
-        updateDiv.innerHTML = this.TEMPLATES.UPDATE_PLUGIN.new_update.interpolate(data);
-    },
     showMyAccount : function(data) {
         data.bw_quota_available = this.Helper.bytesToSize(data.bw_quota_available, 2);
         data.disk_quota = this.Helper.bytesToSize(data.disk_quota, 2);
@@ -443,9 +438,6 @@ PE.UI = {
 		              "<tr><td>Available Disk:</td><td>#{disk_quota_available} / #{disk_quota}</td></tr>" +
 		              "<tr><td>Available Bandwidth:</td><td>#{bw_quota_available}</td></tr>",
 		    footer : "</table>"
-		},
-		UPDATE_PLUGIN : {
-		    new_update : "<a target='_blank' href='#{download_url}'>An update is available!</a>"
 		},
 		FEEDBACK : {
 		    content : "<div class='content'>"+

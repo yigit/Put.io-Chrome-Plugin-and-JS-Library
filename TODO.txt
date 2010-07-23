@@ -1,4 +1,6 @@
 + Show available bandwidth & storage
+- send link in chunks
+- fix manuel link grab regular expression
 - error handling
 - download when done!
 - desktop notifications
