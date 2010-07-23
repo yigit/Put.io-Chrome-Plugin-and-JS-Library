@@ -1,5 +1,5 @@
 PE = {
-    _version : 102, //= 0.01
+    _version : 101, //= 0.01
     UPDATE_SERVER : "http://birbit.com/putio/version.json",
     _downloadItems : [],
     init : function() {
@@ -422,8 +422,7 @@ PE.UI = {
 		    footer : "</table>"
 		},
 		UPDATE_PLUGIN : {
-		    new_update : "A new version of the chrome put.io plugin is available for download." +
-		                  "<br/> Please <a target='_blank' href='#{download_url}'>update</a> to the latest version"
+		    new_update : "<a target='_blank' href='#{download_url}'>An update is available!</a>"
 		},
 		FEEDBACK : {
 		    content : "<div class='content'>"+
