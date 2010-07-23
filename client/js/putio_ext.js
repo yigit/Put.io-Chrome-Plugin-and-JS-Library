@@ -283,27 +283,30 @@ PE.UI = {
         }
     },
     _analyzingUrl : function(e) {
-        this._content.innerHTML = this.TEMPLATES.LINK_EXTRACT.analyzeUrl;
+        this.setStatus(this.TEMPLATES.LINK_EXTRACT.analyzeUrl);
     },
     _analyzedUrl : function(e) {
-        this._content.innerHTML = this.TEMPLATES.LINK_EXTRACT.analyzedUrl.interpolate({count : e.memo.length});
+        this.setStatus(this.TEMPLATES.LINK_EXTRACT.analyzedUrl.interpolate({count : e.memo.length}));
         this._content.innerHTML += this.TEMPLATES.URL_VERIFIED.general;
     },
     _onRequestError : function(e) {
         if(e.memo.error) {
-            this._setStatus(e.memo.error_message);
+            this.setStatus(e.memo.error_message);
         }
     },
     _onLinksExtracted : function(e) {
-        this._content.innerHTML = this.TEMPLATES.LINK_EXTRACT.general.interpolate({
+        this.setStatus(this.TEMPLATES.LINK_EXTRACT.general.interpolate({
             preferred : e.memo.links.preferred.length,
             nonPreferred : e.memo.links.nonPreferred.length,
             notGood : e.memo.links.notGood.length,
-        });
-        this._content.innerHTML += this.TEMPLATES.URL_VERIFIED.general;
+        }));
+        this._content.innerHTML = this.TEMPLATES.URL_VERIFIED.general;
     },
     _onUrlsVerified : function(e) {
         var urlListElm = $('verified_urls_list');
+        if(!urlListElm) {
+            return;
+        }
         var items = e.memo || [];
         urlListElm.innerHTML += this.TEMPLATES.URL_VERIFIED.itemHeader.interpolate({count : items.torrent.length + items.singleurl.length + items.multiparturl.length});
         console.log(items);
@@ -321,7 +324,12 @@ PE.UI = {
     _onAddTransfer : function(e) {
         $('action_' + e.memo.item.downloadId).innerHTML = "downloading...";
     },
-    _setStatus : function(text) {
+    setStatus : function(text) {
+        if(!text) {
+            this._status.hide();
+            return;
+        }
+        this._status.show();
         this._status.innerHTML = text;
     },
     showSettingsPage : function() {
@@ -330,6 +338,9 @@ PE.UI = {
     showGrabbedKeys : function() {
         $('content').innerHTML = this.TEMPLATES.SETTINGS.grabbed_keys.interpolate({key : PE.getApiKey(), secret : PE.getApiSecret()});
     },
+    showFeedback : function() {
+        $('content').innerHTML = this.TEMPLATES.FEEDBACK.content;
+    },    
     Helper : {
         bytesToSize : function (bytes, precision)
         {	
@@ -362,21 +373,20 @@ PE.UI = {
 		LINK_EXTRACT : {
 		    general : "Found #{preferred} good, #{nonPreferred} potential urls.<br/>Verifying with put.io",
 		    analyzeUrl : "Sent page to put.io to find downlodable links",
-		    analyzedUrl : "Putio found #{count} items to fetch. Getting detailed information..."
+		    analyzedUrl : "Put.io found <strong>#{count}</strong> items to fetch. <br/> Getting detailed information..."
 		},
 		URL_VERIFIED : {
-		    general : "<table id='verified_urls_list'></table>",
-		    itemHeader: "<tr><td colspan='3'><b>Put.io verified #{count} url(s).</b></td></tr>",
-		    item : "<tr><td><span id=\"action_#{downloadId}\"><a href=\"javascript:PE.dowloadItem(#{downloadId})\"><img src='img/add_icon.jpg' alt='Add to Putio'/></a></span></td><td>#{name}</td><td>#{human_size}</td></tr>",
-		    multipart_item : "<tr><td>#{name}</td><td>#{human_size}</td><td><span id=\"action_#{downloadId}\"><a href=\"javascript:PE.dowloadItem(#{downloadId})\">Add to Putio</a></span></td></tr>"
+		    general : "<table id='verified_urls_list' cellpadding='0' cellspacing='0'></table>",
+		    itemHeader: "<tr class='status'><td colspan='3'><b>Put.io verified #{count} url(s).</b></td></tr>",
+		    item : "<tr><td><span id=\"action_#{downloadId}\"><a href=\"javascript:PE.dowloadItem(#{downloadId})\"><img src='img/add_icon.png' alt='Add to Putio'/></a></span></td><td><a href=\"javascript:PE.dowloadItem(#{downloadId})\">#{name}</a></td><td>#{human_size}</td></tr>",
+		    multipart_item : "<tr><td><span id=\"action_#{downloadId}\"><a href=\"javascript:PE.dowloadItem(#{downloadId})\"><img src='img/add_icon.png' alt='Add to Putio'/></a></span></td><td><a href=\"javascript:PE.dowloadItem(#{downloadId})\">#{name}</a></td><td>#{human_size}</td></tr>"
 		},
 		SETTINGS : {
-		    general : "Api key and secret are not set. Please enter them in the options pane of the extension OR " +
-		        "go <a href='https://put.io/account/settings' target='_blank'>here</a> and reopen this popup. I'll try to grab them.",
-		    grabbed_keys : "Succesfully imported your putio api key and secret.<br/>Api Key:<b>#{key}</b><br/>Api Secret:<b>#{secret}</b>"
+		    general : "<div class='content'>To link the extension with your put.io account, go <a href='https://put.io/account/settings' target='_blank'>here</a> then reopen this popup.</div>",
+		    grabbed_keys : "Extension succesfully linked with your put.io account."
 		},
 		TRANSFERS : {
-		    header : "<table><tr><td colspan='3'>Transfers</td></tr>",
+		    header : "<table cellpadding='0' cellspacing='0'><tr class='header'><td colspan='3'>Transfers</td></tr>",
 		    item : "<tr id=\"transfer_#{id}\">" +
 		                "<td>%#{percent_done}</td>" +
 		                "<td>" +
@@ -388,24 +398,24 @@ PE.UI = {
                         	    "</div>" +
                         	"</div>" +
 		                "</td>" +
-		                "<td><a href=\"javascript:PE.cancelTransfer(#{id})\">[cancel]</a></td>" +
+		                "<td class='delete'><a href=\"javascript:PE.cancelTransfer(#{id})\"><img class=\"delete-icon\" src=\"img/delete_icon.png\"/></a></a></td>" +
 		            "</tr>",
-		    item_cancel : "<tr id=\"transfer_#{id}\"><td colspan='2'>Are you sure you want to cancel transfer of #{name}?</td><td><a href=\"javascript:PE.cancelTransfer(#{id},true)\">[YES]</a>" +
-		                    "<a href=\"javascript:PE.cancelTransfer(#{id},false)\">[NO]</a></td></tr>",
+		    item_cancel : "<tr id=\"transfer_#{id}\"><td colspan='2'>Are you sure you want to cancel transfer of #{name}?</td><td class='yesno'><a href=\"javascript:PE.cancelTransfer(#{id},true)\" class='yes'>[Yes]</a> " +
+		                    "<a href=\"javascript:PE.cancelTransfer(#{id},false)\">[No]</a></td></tr>",
 		    footer : "</table>",
-		    no_transfers : "You don't have any active transfers right now."
+		    no_transfers : "<div class='zero-state'>no active transfers</div>"
 		},
 		FILES : {
-		    header : "<table><tr><td colspan=\"3\">#{name}</td></tr>",
-		    up : "<tr><td><img src=\"img/back_icon.png\"/></td><td colspan='2'><a href=\"javascript:PE.listFiles(#{id})\">Back to #{name}</a></td></tr>",
-		    item : "<tr id=\"file_#{id}\"><td><img src=\"#{file_icon_url}\"/></td><td><a href=\"javascript:PE.listFiles(#{id})\">#{name}</a></td><td><a href=\"javascript:PE.deleteFile(#{id})\"><img src=\"img/delete_icon.png\"/></a></td></tr>",
-		    download_item : "<tr id=\"file_#{id}\"><td><img src=\"img/download_icon.gif\"/></td><td><a target=\"_blank\" href=\"#{download_url}\">#{name}</a></td><td><a href=\"javascript:PE.deleteFile(#{id})\"><img src=\"img/delete_icon.png\"/></a></td></tr>",
-		    item_delete : "<tr id=\"file_#{id}\"><td><img src=\"img/question_icon.jpg\"/></td><td>Are you sure you want to delete file #{name}?</td><td><a href=\"javascript:PE.deleteFile(#{id},true)\">[YES]</a>" +
-		                    "<a href=\"javascript:PE.deleteFile(#{id},false)\">[NO]</a></td></tr>",
+		    header : "<table cellpadding='0' cellspacing='0'><tr class='header'><td colspan=\"3\">#{name}</td></tr>",
+		    up : "<tr><td><a href=\"javascript:PE.listFiles(#{id})\"><img class=\"file-icon\" src=\"img/back_icon.png\"/></a></td><td colspan='2'><a href=\"javascript:PE.listFiles(#{id})\">Back to #{name}</a></td></tr>",
+		    item : "<tr id=\"file_#{id}\"><td><a href=\"javascript:PE.listFiles(#{id})\"><img class=\"file-icon\" src=\"#{file_icon_url}\"/></a></td><td><a href=\"javascript:PE.listFiles(#{id})\">#{name}</a></td><td class='delete'><a href=\"javascript:PE.deleteFile(#{id})\"><img class=\"delete-icon\" src=\"img/delete_icon.png\"/></a></td></tr>",
+		    download_item : "<tr id=\"file_#{id}\"><td><a target=\"_blank\" href=\"#{download_url}\"><img class=\"file-icon\" src=\"#{file_icon_url}\"/></a></td><td><a target=\"_blank\" href=\"#{download_url}\">#{name}</a></td><td class='delete'><a href=\"javascript:PE.deleteFile(#{id})\"><img class=\"delete-icon\" src=\"img/delete_icon.png\"/></a></td></tr>",
+		    item_delete : "<tr id=\"file_#{id}\"><td><img class=\"file-icon\" src=\"img/question_icon.png\"/></td><td>Are you sure you want to delete file #{name}?</td><td class='yesno'><a href=\"javascript:PE.deleteFile(#{id},true)\" class='yes'>[Yes]</a> " +
+		                    "<a href=\"javascript:PE.deleteFile(#{id},false)\">[No]</a></td></tr>",
 		    footer : "</table>"
 		},
 		MYACCOUNT : {
-		    header : "<table>",
+		    header : "<table cellpadding='0' cellspacing='0'>",
 		    content : "<tr><td>Username:</td><td>#{name}</td></tr>" +
 		              "<tr><td>Available Disk:</td><td>#{disk_quota_available} / #{disk_quota}</td></tr>" +
 		              "<tr><td>Available Bandwidth:</td><td>#{bw_quota_available}</td></tr>",
@@ -414,6 +424,14 @@ PE.UI = {
 		UPDATE_PLUGIN : {
 		    new_update : "A new version of the chrome put.io plugin is available for download." +
 		                  "<br/> Please <a target='_blank' href='#{download_url}'>update</a> to the latest version"
-		}
+		},
+		FEEDBACK : {
+		    content : "<div class='content'>"+
+		              "<p><textarea id='feedback' placeholder='Your feedback'></textarea></p>" +
+		              "<p><input type='text' placeholder='Your e-mail (If you want a reply)' /></p>" +
+		              "<p><div class='button'>Submit</div>"+
+		              "</div>"
+		},
+		
 	}
 };

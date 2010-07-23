@@ -1,6 +1,61 @@
-#menu {
-    float : right;
+body {
+    font: 12px "Lucida Grande", Tahoma, Arial;
+    margin: 0;
+    padding: 0;
+    max-height: 430px;
 }
+
+#menu {
+    text-align: right;
+    background: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(221,221,221)),
+        color-stop(1, rgb(238,238,238))
+    );
+    overflow: auto;
+    padding-left: 20px;
+    position: relative;    
+}
+
+    #loading {
+        position: absolute;
+        top: 5px; left: 5px;
+    }
+    
+    #menu a {
+        color: #666;
+        text-decoration: none;
+        text-shadow: 0 1px 0 #fff;
+        display: block;
+        float: left;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #fff;        
+        padding: 3px 6px;
+    }
+    
+        #menu a:hover,
+        #menu a.active {
+            background: -webkit-gradient(
+                linear,
+                left bottom,
+                left top,
+                color-stop(0, rgb(238,238,238)),                
+                color-stop(1, rgb(221,221,221))
+            );
+        }
+    
+    #menu a:last-child {
+        border-right: none;
+    }
+    
+    #menu .menu-shim {
+        float: right;
+        overflow: auto;
+        border-left: 1px solid #fff;
+    }
+    
 
 .meter-wrap{
     position: relative;
@@ -9,11 +64,17 @@
 
 .meter-wrap, .meter-value, .meter-text {
     /* The width and height of your image */
-    width: 255px; height: 30px;
+    width: 255px; height: 2.3em;
 }
 
 .meter-wrap, .meter-value {
-    background: #bdbdbd top left no-repeat;
+    background: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(0,163,33)),
+        color-stop(1, rgb(95,230,5))
+    );
 }
             
 .meter-text {
@@ -25,4 +86,165 @@
     color: #fff;
     text-align: center;
     width: 100%;
+}
+
+#status {
+    background: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(245,239,177)),
+        color-stop(1, rgb(255,253,209))
+    );
+    color: #85710a;
+    padding: 3px 6px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#content {
+    max-height: 400px;
+    overflow-x: hidden;
+}
+
+table {
+   width: 100%;
+}
+
+table td {
+    font-size: 11px;
+    padding: 5px;
+    word-wrap: break-word;  
+}
+
+table td:first-child {
+    padding-right: 0;
+}
+
+table tr:hover td {
+    background: #f0f0f0;
+}
+
+table tr:hover td .delete-icon {
+    opacity: 1;
+    -webkit-transition: opacity 0.05s linear;
+}
+
+table a {
+    color: #000;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;    
+    text-overflow: ellipsis;    
+}
+
+table td:nth-child(2) a {
+    width: 245px;
+}
+
+
+
+table tr:hover a {
+    white-space: normal;
+    word-wrap: break-word;  
+    text-decoration: underline;  
+}
+
+
+
+table td .delete-icon {
+    opacity: 0;
+    -webkit-transition: opacity 0.05s linear;    
+}
+
+table td img.file-icon {
+    width: 16px;
+}
+
+table tr.status:hover td,
+table tr.header:hover td {
+    background: white;
+}
+
+table tr.status td,
+table tr.header td {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.content {
+    padding: 5px;
+}
+
+.content input[type="text"] {
+    width: 100%;
+}
+
+.content input[type="text"],
+.content textarea {
+    border: 1px solid #ccc;
+    padding: 3px;
+}
+
+.content textarea {
+    width: 100%;
+    height: 6em;
+}
+
+.zero-state {
+    padding: 30px 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ccc;
+    text-align: center;
+}
+
+
+
+.button {
+    background: -webkit-gradient(linear, left top, left bottom, from(#60c2ce), to(#40b5c5));
+    display: inline-block;
+    padding: 5px 10px 6px;
+    color: #fff;
+    border-bottom: 1px solid #3498A6;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -webkit-border-radius: 5px;
+    -webkit-box-shadow: #ccc 0 1px 3px ;
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+    position: relative;
+    cursor: pointer;
+}
+
+.button:active {
+    -webkit-transform: translateY(1px);
+}
+
+td.yesno {
+    width: 60px;
+    text-align: right;
+}
+
+td.yesno a {
+    display: inline;
+    font-weight: bold;
+}
+
+td.yesno .yes {
+    color: #DD2900;
+}
+
+table tr:hover td.yesno a {
+    text-decoration: none;
+}
+
+table tr:hover td.yesno a:hover {
+    text-decoration: underline;
+}
+
+td.delete {
+    text-align: right;
 }
