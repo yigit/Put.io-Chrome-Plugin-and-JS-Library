@@ -4,6 +4,7 @@ PE = {
     _downloadItems : [],
     init : function() {
         this.UI.init();
+        this.Tracking.init();
         if(!this.getApiKey() || !this.getApiSecret()) {
             this.UI.showSettingsPage();
             this.parseKeys();
@@ -176,8 +177,6 @@ PE = {
         Putio.Transfer.add(urls, function(e) {
                    document.fire(this.EVENTS.ADD_TRANSFER_RESPONSE, {response : e, item : item});
                }.bind(this));
-    },
-    submitFeedback : function(feedback, email) {
     },
     EVENTS : {
         EXTRACTED_LINKS : "pe:extracted_links",
@@ -352,21 +351,16 @@ PE.UI = {
             showTab: false
         };
         UserVoice.Popin.show(uservoiceOptions);
-        $('content').innerHTML = this.TEMPLATES.FEEDBACK.uservoice_holder;
-        
-    },    
-    feedbackFormOnSubmit : function() {
-        var feedback = $('feedback').value.trim();
-        var feedback_email = $('feedback_email').value.trim();
-        if(feedback && feedback.length > 5) {
-            PE.submitFeedback(feedback, feedback_email);
+        //make sure content has enough height to hold
+        //feedback div
+        var dims = $('content').getDimensions();
+        if(dims.height < 350) {
+            $('content').style.height = "350px";
         }
-    },
+    },    
     _loadUserVoice : function() {
         var s = document.createElement('script');
         s.src = ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js";
-        //this._uservoiceScriptDiv = document.createElement('div');
-//        document.appendChild(s);
         document.getElementsByTagName('head')[0].appendChild(s);
         
     },
@@ -463,4 +457,16 @@ PE.UI = {
 		},
 		
 	}
+};
+
+PE.Tracking = {
+    init : function() {
+        document.observe(Putio.EVENTS.REQUEST_START, this._onRequestStart.bind(this));
+    },
+    
+    _onRequestStart : function(e) {
+        var page = e.memo.page;
+        var method = e.memo.method;
+        _gaq && _gaq.push(['_trackEvent', page, method]);
+    }
 };

@@ -102,7 +102,7 @@ Putio = {
         request.api_secret = this.api_secret;
         request.params = params;
         this._debug("params:", request);
-        document.fire(this.EVENTS.REQUEST_START, {request : request, activeRequestCount : ++this._activeRequestCount});
+        document.fire(this.EVENTS.REQUEST_START, {request : request, page : page, method : method, activeRequestCount : ++this._activeRequestCount});
         new Ajax.Request(this.API_SERVER + page + "/?method=" + method, 
             {parameters : {request : Object.toJSON(request)}, 
              method: 'get',
