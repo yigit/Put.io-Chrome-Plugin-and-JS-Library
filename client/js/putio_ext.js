@@ -1,6 +1,6 @@
 PE = {
-    _version : 102, //= 0.01
-    UPDATE_SERVER : "http://birbit.com/putio/version.json",
+    _version : 101, //= 0.01
+    UPDATE_SERVER : "http://github.com/downloads/yigit/Put.io-Chrome-Plugin-and-JS-Library/version.json",
     _downloadItems : [],
     init : function() {
         this.UI.init();
@@ -177,6 +177,8 @@ PE = {
                    document.fire(this.EVENTS.ADD_TRANSFER_RESPONSE, {response : e, item : item});
                }.bind(this));
     },
+    submitFeedback : function(feedback, email) {
+    },
     EVENTS : {
         EXTRACTED_LINKS : "pe:extracted_links",
         VERIFIED_URLS : "pe:verified_urls",
@@ -190,6 +192,7 @@ PE.UI = {
     _content : null,
     _status : null,
     _loading : null,
+    _uservoiceScriptDiv : null,
     init : function() {
         this._content = $('content');
         this._status = $('status');
@@ -203,6 +206,8 @@ PE.UI = {
         document.observe(Putio.EVENTS.REQUEST_START, this._updateLoading.bind(this));
         document.observe(Putio.EVENTS.REQUEST_END, this._updateLoading.bind(this));
         document.observe(Putio.EVENTS.REQUEST_ERROR, this._onRequestError.bind(this));
+        
+        this._loadUserVoice();
     },
     listFiles : function(files, parent) {
         var html = this.TEMPLATES.FILES.header.interpolate(parent);
@@ -333,14 +338,38 @@ PE.UI = {
         this._status.innerHTML = text;
     },
     showSettingsPage : function() {
-        $('content').innerHTML = this.TEMPLATES.SETTINGS.general;
+        this.setStatus(this.TEMPLATES.SETTINGS.general);
     },
     showGrabbedKeys : function() {
-        $('content').innerHTML = this.TEMPLATES.SETTINGS.grabbed_keys.interpolate({key : PE.getApiKey(), secret : PE.getApiSecret()});
+        this.setStatus(this.TEMPLATES.SETTINGS.grabbed_keys.interpolate({key : PE.getApiKey(), secret : PE.getApiSecret()}));
     },
-    showFeedback : function() {
-        $('content').innerHTML = this.TEMPLATES.FEEDBACK.content;
+    showFeedback : function(uservoiceScript) {
+        var uservoiceOptions = {
+            key: 'putiochrome',
+            host: 'putiochrome.uservoice.com', 
+            forum: '68077',
+            lang: 'en',
+            showTab: false
+        };
+        UserVoice.Popin.show(uservoiceOptions);
+        $('content').innerHTML = this.TEMPLATES.FEEDBACK.uservoice_holder;
+        
     },    
+    feedbackFormOnSubmit : function() {
+        var feedback = $('feedback').value.trim();
+        var feedback_email = $('feedback_email').value.trim();
+        if(feedback && feedback.length > 5) {
+            PE.submitFeedback(feedback, feedback_email);
+        }
+    },
+    _loadUserVoice : function() {
+        var s = document.createElement('script');
+        s.src = ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js";
+        //this._uservoiceScriptDiv = document.createElement('div');
+//        document.appendChild(s);
+        document.getElementsByTagName('head')[0].appendChild(s);
+        
+    },
     Helper : {
         bytesToSize : function (bytes, precision)
         {	
@@ -382,7 +411,7 @@ PE.UI = {
 		    multipart_item : "<tr><td><span id=\"action_#{downloadId}\"><a href=\"javascript:PE.dowloadItem(#{downloadId})\"><img src='img/add_icon.png' alt='Add to Putio'/></a></span></td><td><a href=\"javascript:PE.dowloadItem(#{downloadId})\">#{name}</a></td><td>#{human_size}</td></tr>"
 		},
 		SETTINGS : {
-		    general : "<div class='content'>To link the extension with your put.io account, go <a href='https://put.io/account/settings' target='_blank'>here</a> then reopen this popup.</div>",
+		    general : "<div class='content'>To link the extension with your put.io account, go <a href='https://put.io/account/settings' target='_blank'>here</a>, login then reopen this popup.</div>",
 		    grabbed_keys : "Extension succesfully linked with your put.io account."
 		},
 		TRANSFERS : {
@@ -422,15 +451,16 @@ PE.UI = {
 		    footer : "</table>"
 		},
 		UPDATE_PLUGIN : {
-		    new_update : "A new version of the chrome put.io plugin is available for download." +
-		                  "<br/> Please <a target='_blank' href='#{download_url}'>update</a> to the latest version"
+		    new_update : "A new version is available." +
+		                  "<a target='_blank' href='#{download_url}'>update &raquo;</a>"
 		},
 		FEEDBACK : {
 		    content : "<div class='content'>"+
 		              "<p><textarea id='feedback' placeholder='Your feedback'></textarea></p>" +
-		              "<p><input type='text' placeholder='Your e-mail (If you want a reply)' /></p>" +
-		              "<p><div class='button'>Submit</div>"+
-		              "</div>"
+		              "<p><input id='feedback_email' type='text' placeholder='Your e-mail (If you want a reply)' /></p>" +
+		              "<p><div class='button' onclick='PE.UI.feedbackFormOnSubmit()'>Submit</div>"+
+		              "</div>",
+            uservoice_holder : "<div style='height:350px' id='uservoice_div'></div>"
 		},
 		
 	}
