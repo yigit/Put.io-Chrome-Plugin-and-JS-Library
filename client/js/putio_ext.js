@@ -407,14 +407,12 @@ PE.UI = {
 		    header : "<table cellpadding='0' cellspacing='0'><tr class='header'><td colspan='3'>Transfers</td></tr>",
 		    item : "<tr id=\"transfer_#{id}\">" +
 		                "<td>%#{percent_done}</td>" +
-		                "<td>" +
-		                    "<div class='meter-wrap'>" +
-                        	    "<div class='meter-value' style='background-color: #0a0; width: #{percent_done}%;'>" +
-                        	        "<div class='meter-text'>" +
-                        	            "#{name}" +
-                        	        "</div>" +
-                        	    "</div>" +
-                        	"</div>" +
+		                "<td  class='meter-wrap'>" +
+                    	    "<div class='meter-value' style='width: #{percent_done}%;'>" +
+                    	        "<div class='meter-text'>" +
+                    	            "<a>#{name}</a>" +
+                    	        "</div>" +
+                    	    "</div>" +
 		                "</td>" +
 		                "<td class='delete'><a href=\"javascript:PE.cancelTransfer(#{id})\"><img class=\"delete-icon\" src=\"img/delete_icon.png\"/></a></a></td>" +
 		            "</tr>",

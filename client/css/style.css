@@ -60,14 +60,15 @@ body {
 .meter-wrap{
     position: relative;
     overflow : hidden;
+    border: 1px solid #0a0;
 }
 
 .meter-wrap, .meter-value, .meter-text {
     /* The width and height of your image */
-    width: 255px; height: 2.3em;
+    width: 255px;
 }
 
-.meter-wrap, .meter-value {
+.meter-wrap .meter-value {
     background: -webkit-gradient(
         linear,
         left bottom,
@@ -78,14 +79,10 @@ body {
 }
             
 .meter-text {
-    position: absolute;
-    top:0; left:0;
-
-    padding-top: 5px;
-                
     color: #fff;
     text-align: center;
     width: 100%;
+    padding-top : 5px;
 }
 
 #status {
