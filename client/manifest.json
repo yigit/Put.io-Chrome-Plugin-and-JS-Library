@@ -1,14 +1,18 @@
 {
   "name": "Add 2 Put.io",
-  "version": "0.4",
-  "description": "One click add for torrents to put io from any page",
-  "update_url": "http://github.com/downloads/yigit/Put.io-Chrome-Plugin-and-JS-Library/updates.xml",
+  "version": "1.0",
+  "description": "Easily add files to put.io, browser your put.io directory, download, delete etc. A put.io user's must have!",
+  "icons": { 
+    "16": "img/icon_16.png",
+    "48": "img/icon_48.png",
+    "128": "img/icon_128.png" 
+  },
   "browser_action": {
     "default_icon": "img/icon.png",
     "popup" : "popup.html"
   },
   "permissions": [
-    "http://*/", "tabs"
+    "http://*/","https://*/", "tabs"
   ],
   "content_scripts": [
   {
