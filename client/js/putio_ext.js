@@ -1,6 +1,5 @@
 PE = {
     _version : 103, //= 0.03
-    UPDATE_SERVER : "http://github.com/downloads/yigit/Put.io-Chrome-Plugin-and-JS-Library/version.json",
     _downloadItems : [],
     init : function() {
         this.UI.init();
@@ -12,24 +11,7 @@ PE = {
             Putio.init(this.getApiKey(), this.getApiSecret());
             PE.anayzeUrl();
         }
-    },
-    checkForUpdate : function() {
-        new Ajax.Request(this.UPDATE_SERVER, 
-            {parameters : {}, 
-             method: 'get',
-             cache : 'false',
-             onSuccess : function(response) {
-                 var json = null;
-                 try {
-                     json = response.responseJSON || response.responseText.evalJSON(); 
-                 }catch(e) {
-                     json = {error : true, error_message : "Could not parse response"};
-                 }
-                 if(json.version > this._version) {
-                     this.UI.displayUpdate(json);
-                 }
-             }.bind(this)
-            });
+        Putio.setClient('chrome_extension');
     },
     getApiKey : function() {
         return localStorage.api_key;
@@ -134,7 +116,18 @@ PE = {
         chrome.tabs.getSelected(null, function(tab) {
             chrome.tabs.sendRequest(tab.id, {innerHTML : true}, function(response) {
                 console.log(response);
-                Putio.Url.extracturls(response.innerHTML);
+                Putio.Url.extracturls(null, response.innerHTML, function(e) {
+                    var res = e.response.results;
+                    urls = [];
+                    res.each(function(item) {
+                        urls.push(item.url);
+                    });
+                    urls = urls.uniq();
+                    document.fire(this.EVENTS.ANALYZED_URL, urls);
+                    Putio.Url.analyze(urls, function(e) {
+                        this._onUrlsAnayzed(e);
+                    }.bind(this));
+                }.bind(this));
             });
         });
     },

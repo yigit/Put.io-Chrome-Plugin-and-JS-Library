@@ -5,11 +5,16 @@ Putio = {
     _files : [],
     _transfers : [],
     _activeRequestCount : 0,
+    _client : 'putio_js',
     
     init : function(key, secret) {
         this.api_key = key;
         this.api_secret = secret;
         this._files[0] = {'name' : "Your Files", 'id' : 0, 'parent_id' : 0};
+    },
+    
+    setClient : function(client) {
+        this._client = client;
     },
     
     Files : {
@@ -104,8 +109,8 @@ Putio = {
         this._debug("params:", request);
         document.fire(this.EVENTS.REQUEST_START, {request : request, page : page, method : method, activeRequestCount : ++this._activeRequestCount});
         new Ajax.Request(this.API_SERVER + page + "/?method=" + method, 
-            {parameters : {request : Object.toJSON(request)}, 
-             method: 'get',
+            {parameters : {request : Object.toJSON(request), client : this._client}, 
+             method: 'post',
              onSuccess : function(response) {
                  var json = null;
                  try {
