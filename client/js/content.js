@@ -43,7 +43,7 @@ chrome.extension.onRequest.addListener(
             apiSecret = formTexts[1].innerText;
             sendResponse({error : null, api_key : apiKey, api_secret : apiSecret});
         } else if(request.innerHTML) {
-            var html = document.getElementsByTagName("html")[0].innerHTML;
+            var html = document.documentElement.innerHTML;
             sendResponse({error : null, innerHTML : html});
         }
         else {
