@@ -4,14 +4,14 @@ PE = {
     init : function() {
         this.UI.init();
         this.Tracking.init();
+        Putio.setClient('chrome_extension');
         if(!this.getApiKey() || !this.getApiSecret()) {
             this.UI.showSettingsPage();
             this.parseKeys();
         } else {
             Putio.init(this.getApiKey(), this.getApiSecret());
-            PE.anayzeUrl();
+            PE.analyzeUrl();
         }
-        Putio.setClient('chrome_extension');
     },
     getApiKey : function() {
         return localStorage.api_key;
@@ -90,7 +90,7 @@ PE = {
     _getDownloadItem : function(id) {
         return this._downloadItems[id];
     },
-    anayzeUrl : function() {
+    analyzeUrl : function() {
         document.fire(this.EVENTS.ANALYZING_URL, {});
         chrome.tabs.getSelected(null, function(tab) {
             var url = tab.url;
@@ -132,15 +132,23 @@ PE = {
         });
     },
     analyzePage : function() {
+        this.UI.clearContent();
         chrome.tabs.getSelected(null, function(tab) {
-          chrome.tabs.sendRequest(tab.id, {}, function(response) {
-            if(!response || !response.preferred || !response.nonPreferred) {
-                return;
-            }
-            document.fire(this.EVENTS.EXTRACTED_LINKS, {links : response});
-        	anchors = response.preferred.concat(response.nonPreferred).collect(function(i){return i.href});
-        	response.preferred.length && Putio.Url.analyze(response.preferred.collect(function(i){return i.href}), this._onUrlsAnayzed.bind(this));
-        	response.nonPreferred.length && Putio.Url.analyze(response.nonPreferred.inGroupsOf(10)[0].collect(function(i){return i.href}), this._onUrlsAnayzed.bind(this));
+          chrome.tabs.sendRequest(tab.id, {innerHTML : true}, function(response) {
+              var txt = response.innerHTML;
+              document.fire(this.EVENTS.ANALYZING_URL, {});
+              Putio.Url.extracturls(null, txt, function(e) {
+                  var res = e.response.results;
+                  urls = [];
+                  res.each(function(item) {
+                      urls.push(item.url);
+                  });
+                  urls = urls.uniq();
+                  document.fire(this.EVENTS.ANALYZED_URL, urls);
+                  Putio.Url.analyze(urls, function(e) {
+                      this._onUrlsAnayzed(e);
+                  }.bind(this));
+              }.bind(this));
           }.bind(this));
         }.bind(this));
     },
@@ -223,12 +231,16 @@ PE.UI = {
             html = this.TEMPLATES.TRANSFERS.header;
             transfers.each(
                 function(transfer) {
+                    transfer.percent_done = 53;
                     html += this.TEMPLATES.TRANSFERS.item.interpolate(transfer);
                 }.bind(this)
                 );
             html += this.TEMPLATES.TRANSFERS.footer;
         }
         this._content.innerHTML = html;
+    },
+    clearContent : function() {
+        this._content.innerHTML = "";
     },
     showMyAccount : function(data) {
         data.bw_quota_available = this.Helper.bytesToSize(data.bw_quota_available, 2);
