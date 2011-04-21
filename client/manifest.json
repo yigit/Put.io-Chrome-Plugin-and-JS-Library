@@ -2,17 +2,17 @@
   "name": "Add 2 Put.io",
   "version": "0.9",
   "description": "Easily add files to put.io, browse your put.io directory, download, delete etc. A put.io user's must have!",
-  "icons": { 
+  "icons": {
     "16": "img/icon_16.png",
     "48": "img/icon_48.png",
-    "128": "img/icon_128.png" 
+    "128": "img/icon_128.png"
   },
   "browser_action": {
     "default_icon": "img/icon.png",
     "popup" : "popup.html"
   },
   "permissions": [
-    "http://*/","https://*/", "tabs"
+    "http://*/","https://*/", "tabs", "contextMenus", "notifications"
   ],
   "content_scripts": [
   {
@@ -20,5 +20,6 @@
       "js": ["js/content.js", "js/prototype.js"]
   }
   ],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "background_page": "background.html"
 }
