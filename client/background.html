@@ -1,0 +1,30 @@
+<script src="js/prototype.js"></script>
+<script src="js/putio.js"></script>
+<script src="js/putio_ext.js"></script>
+<script>
+  Putio.init(PE.getApiKey(), PE.getApiSecret());
+  var contexts = ["link"];//"selection",
+  chrome.contextMenus.create({"title": "Add 2 Put.io", "contexts":contexts,
+                                         "onclick": function(info, tab) {
+                                            var notify = function(title, text) {
+                                              var notification = webkitNotifications.createNotification(
+                                                'img/icon_128.png',
+                                                title,
+                                                text
+                                              );
+                                              notification.show();
+                                            }
+                                            if(info.linkUrl) {
+                                              Putio.Transfer.add([info.linkUrl], function(e) {
+                                                if(e && e.response && e.response.results && e.response.results.length) {
+                                                  var res = e.response.results[0];
+                                                  notify(res.status, res.name || "Noname");
+                                                } else {
+                                                  notify("Error", "Could not find anything to download.");
+                                                }
+                                              }.bind(this));
+                                            } else {
+                                              notify("Error", "Could not find a link to download.");
+                                            }
+                                         }});
+</script>

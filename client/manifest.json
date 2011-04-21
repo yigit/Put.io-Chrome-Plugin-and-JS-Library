@@ -1,6 +1,6 @@
 {
   "name": "Add 2 Put.io",
-  "version": "0.9",
+  "version": "0.9.1",
   "description": "Easily add files to put.io, browse your put.io directory, download, delete etc. A put.io user's must have!",
   "icons": {
     "16": "img/icon_16.png",
