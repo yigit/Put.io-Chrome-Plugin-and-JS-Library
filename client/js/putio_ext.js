@@ -231,7 +231,6 @@ PE.UI = {
             html = this.TEMPLATES.TRANSFERS.header;
             transfers.each(
                 function(transfer) {
-                    transfer.percent_done = 53;
                     html += this.TEMPLATES.TRANSFERS.item.interpolate(transfer);
                 }.bind(this)
                 );
